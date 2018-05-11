@@ -55,10 +55,12 @@
                              :start start :test #'equal)))
           (if (null pos)
               fail
-              (let ((b2 (pat-match pat (subseq input pos) bindings)))
+              (let ((b2 (pat-match
+                          pat (subseq input pos)
+                          (match-variable var (subseq input 0 pos) bindings))))
                 (if (eq b2 fail)
                     (segment-match pattern input bindings (+ pos 1))
-                    (match-variable var (subseq input 0 pos) b2))))))))
+                    b2)))))))
 
 (defun match-variable (var input bindings)
   "Does VAR match input? Uses (or updates) and returns bindings."
