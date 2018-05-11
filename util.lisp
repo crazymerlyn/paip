@@ -7,3 +7,7 @@
              :test-not (complement test-not) keyword-args)
       (apply #'remove item sequence
              :test (complement test) keyword-args)))
+
+(defun starts-with (seq elem)
+  "Determine whether `seq`  starts with elem"
+  (and (consp seq) (eq (first seq) elem)))
