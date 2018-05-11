@@ -56,9 +56,9 @@
       x
       (list x)))
 
-(defun mappend (fn the-list)
+(defun mappend (fn &rest the-list)
   "Apply fn to each element of the list and append the results."
-  (apply #'append (mapcar fn the-list)))
+  (apply #'append (apply #'mapcar (cons fn the-list))))
 
 (defun random-elt (choices)
   "Choose an element from a list at random."
