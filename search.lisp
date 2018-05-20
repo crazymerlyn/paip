@@ -21,3 +21,30 @@
 
 (defun binary-tree (x) (list (* 2 x) (+ 1 (* 2 x))))
 (defun is (value) #'(lambda (x) (eql x value)))
+
+(defun finite-binary-tree (n)
+  "Return a successor function that generates a binary tree
+   with n nodes."
+  #'(lambda (x)
+      (remove-if #'(lambda (child) (> child n))
+                 (binary-tree x))))
+
+(defun diff (num)
+  "Return the function that finds the difference from num."
+  #'(lambda (x) (abs (- num x))))
+
+(defun sorter (cost-fn)
+  "Return a combiner function that sorts according to cost-fn."
+  #'(lambda (new old)
+      (sort (append new old) #'< :key cost-fn)))
+
+(defun best-first-search (start goal-p successors cost-fn)
+  "Search lowest cost states first until goal is reached."
+  (tree-search (list start) goal-p successors (sorter cost-fn)))
+
+(defun price-is-right (price)
+  "Return a function that measures the difference from price,
+   but gives a big penalty for going over price."
+  #'(lambda (x) (if (> x price)
+                    most-positive-fixnum
+                    (- price x))))
