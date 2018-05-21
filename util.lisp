@@ -8,6 +8,11 @@
       (apply #'remove item sequence
              :test (complement test) keyword-args)))
 
+(defun find-all-if (predicate sequence)
+  "Find all those elements of sequence that match predicate.
+   Doesn't alter sequence."
+  (remove-if #'(lambda (item) (not (funcall predicate item))) sequence))
+
 (defun starts-with (seq elem)
   "Determine whether `seq`  starts with elem"
   (and (consp seq) (eq (first seq) elem)))

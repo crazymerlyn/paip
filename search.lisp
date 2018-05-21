@@ -1,3 +1,4 @@
+(load "util.lisp")
 (defun tree-search (states goal-p successors combiner)
   "Find a state that satisfies goal-p. Start with states,
    and search according to successors and combiner."
@@ -59,3 +60,31 @@
                      (if (> beam-width (length sorted))
                          sorted
                          (subseq sorted 0 beam-width))))))
+
+(defstruct (city (:type list)) name long lat)
+(defparameter *cities*
+  '((Atlanta 84.23 33.45) (Los-Angeles 118.15 34.03)
+    (Boston 71.05 42.21) (Memphis 90.03 35.09)
+    (Chicago 87.37 41.50) (New-York 73.58 40.47)))
+
+(defun neighbors (city)
+  "Find all cities with 1000 kilometers."
+  (find-all-if #'(lambda (c)
+                   (and (not (eq c city))
+                        (< (air-distance c city) 1000.0)))
+               *cities*))
+
+(defun city (name)
+  "Find the city with this name."
+  (assoc name *cities*))
+
+(defun air-distance (a b)
+  (let ((x (abs (- (city-lat a) (city-lat b))))
+        (y (abs (- (city-long a) (city-long b)))))
+    (sqrt (+ (* x x) (* y y)))))
+
+(defun trip (start dest)
+  "Search for a way from start to dest."
+  (beam-search start (is dest) #'neighbors
+               #'(lambda (c) (air-distance c dest))
+               1))
