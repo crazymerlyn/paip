@@ -1,6 +1,7 @@
 (defun tree-search (states goal-p successors combiner)
   "Find a state that satisfies goal-p. Start with states,
    and search according to successors and combiner."
+  (print states)
   (cond ((null states) nil)
         ((funcall goal-p (first states)) (first states))
         (t (tree-search
@@ -48,3 +49,13 @@
   #'(lambda (x) (if (> x price)
                     most-positive-fixnum
                     (- price x))))
+
+(defun beam-search (start goal-p successors cost-fn beam-width)
+  "Search highest scoring states first until goal is reached,
+   but never consider more than beam-width states at a time."
+  (tree-search (list start) goal-p successors
+               #'(lambda (new old)
+                   (let ((sorted (funcall (sorter cost-fn) new old)))
+                     (if (> beam-width (length sorted))
+                         sorted
+                         (subseq sorted 0 beam-width))))))
