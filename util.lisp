@@ -25,7 +25,7 @@
     (fresh-line *debug-io*)
     (apply #'format *debug-io* format-string args)))
 
-(defun debug (&rest ids)
+(defun add-debug (&rest ids)
   "Start dbg output on given ids."
   (setf *dbg-ids* (union *dbg-ids* ids)))
 
