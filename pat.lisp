@@ -172,17 +172,17 @@
           ((equal input (binding-val binding)) bindings)
           (t fail))))
 
-(defun pat-match-abbrev (symbol expansion)
-  "Define symbol as a macro standing for a pat-match pattern."
-  (setf (get symbol 'expand-pat-match-abbrev)
-        (expand-pat-match-abbrev expansion)))
-
 (defun expand-pat-match-abbrev (pat)
   "Expand out all pattern matching abbreviations in pat."
   (cond ((and (symbolp pat) (get pat 'expand-pat-match-abbrev)))
         ((atom pat) pat)
         (t (cons (expand-pat-match-abbrev (first pat))
                  (expand-pat-match-abbrev (rest pat))))))
+
+(defun pat-match-abbrev (symbol expansion)
+  "Define symbol as a macro standing for a pat-match pattern."
+  (setf (get symbol 'expand-pat-match-abbrev)
+        (expand-pat-match-abbrev expansion)))
 
 (defun rule-based-translator
   (input rules &key (matcher #'pat-match)
