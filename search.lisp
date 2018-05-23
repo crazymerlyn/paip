@@ -1,7 +1,9 @@
 (load "util.lisp")
+(load "pat.lisp")
 (defun tree-search (states goal-p successors combiner)
   "Find a state that satisfies goal-p. Start with states,
    and search according to successors and combiner."
+  (dbg :search "~&;; Search: ~a" states)
   (cond ((null states) nil)
         ((funcall goal-p (first states)) (first states))
         (t (tree-search
@@ -161,3 +163,30 @@
 
 (defstruct (path (:print-function print-path))
   state (previous nil) (cost-so-far 0) (total-cost 0))
+
+(defun graph-search (states goal-p successors combiner
+                     &optional (state= #'eql) old-states)
+  "Find a state that satisfies goal-p. Start with states,
+   and search according to successors and combiner.
+   Don't try the same state twice."
+  (dbg :search "~&;; Search: ~a" states)
+  (cond ((null states) fail)
+        ((funcall goal-p (first states)) (first states))
+        (t (graph-search
+             (funcall
+               combiner
+               (new-states states successors state= old-states)
+               (rest states))
+             goal-p successors combiner state=
+             (adjoin (first states) old-states
+                     :test state=)))))
+
+(defun new-states (states successors state= old-states)
+  "Generate successor states that have not been seen before."
+  (remove-if
+    #'(lambda (state)
+        (or (member state states :test state=)
+            (member state old-states :test state=)))
+    (funcall successors (first states))))
+
+(defun next2 (x) (list (+ x 1) (+ x 2)))
