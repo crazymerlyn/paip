@@ -16,3 +16,20 @@
 (defun starts-with (seq elem)
   "Determine whether `seq`  starts with elem"
   (and (consp seq) (eq (first seq) elem)))
+
+(defvar *dbg-ids* nil "Identifiers used by dbg.")
+
+(defun dbg (id format-string &rest args)
+  "Print debugging info if (DEBUG ID) has been specified."
+  (when (member id *dbg-ids*)
+    (fresh-line *debug-io*)
+    (apply #'format *debug-io* format-string args)))
+
+(defun debug (&rest ids)
+  "Start dbg output on given ids."
+  (setf *dbg-ids* (union *dbg-ids* ids)))
+
+(defun undebug (&rest ids)
+  "Stop dbg output on given ids. With no ids, stop dbg altogether."
+  (setf *dbg-ids* (if (null ids) nil
+                      (set-difference *dbg-ids* ids))))
