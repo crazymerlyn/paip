@@ -247,3 +247,13 @@
                (t (setf paths (insert-path path2 paths))))))
          (a*-search paths goal-p successors cost-fn cost-left-fn
                     state= old-paths)))))
+
+(defun search-all (start goal-p successors cost-fn beam-width)
+  "Find all solutions to a search problem, using beam search."
+  (let ((solutions nil))
+    (beam-search
+      start #'(lambda (x)
+                (when (funcall goal-p x) (push x solutions))
+                nil)
+      successors cost-fn beam-width)
+    solutions))
