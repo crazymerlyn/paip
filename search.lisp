@@ -76,7 +76,7 @@
 (defun sorter (cost-fn)
   "Return a combiner function that sorts according to cost-fn."
   #'(lambda (new old)
-      (sort (append new old) #'< :key cost-fn)))
+      (merge 'list old (sort new #'< :key cost-fn) #'< :key cost-fn)))
 
 (defun best-first-search (start goal-p successors cost-fn)
   "Search lowest cost states first until goal is reached."
