@@ -257,3 +257,16 @@
                 nil)
       successors cost-fn beam-width)
     solutions))
+
+(defun n-solution-search (n start goal-p successors cost-fn beam-width)
+  "Find the first n solutions to a search problem, using beam search."
+  (let ((solutions nil)
+        (found 0))
+    (beam-search
+      start #'(lambda (x)
+                (when (funcall goal-p x)
+                  (push x solutions)
+                  (incf found))
+                (if (>= found n) t nil))
+      successors cost-fn beam-width)
+    solutions))
